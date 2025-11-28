@@ -20,12 +20,16 @@ T = 0.45;//sec
 t = os.phasor(1,1/T)*T;
 shortBursts = (t<0.02) + (t>0.15)*(t<0.17) + (t>0.22)*(t<0.24);
 
-seque = (os.phasor(1,1/8)>0.7);
+seque = (os.phasor(1,1/8)>0.7) * (os.phasor(1,9)<0.9);
 amp = shortBursts*(1-seque) + seque;
 };
 
-telefon = _+(gsm*0.1 + no.noise*0.01);
+telefon = _+(gsm*0.051 + no.noise*0.0051);
+hardclip = _*3:min(_,1):max(_,-1);
 
+mode = _<:_+fi.resonbp(120, 350,20);
+
+hochpass = fi.highpass(3,1000);
 
 fx0 = _; // bypass, original. 
 fx1 = _; // phase gedreht links/rechts. (geschieht nicht in dieser zeile)
@@ -37,15 +41,17 @@ fx6 = _:_+no.noise*0.001:_; // rauschen
 fx7 = _:_+crackler:_; // knacksen
 fx8 = _:vibrato:_; // gleichlauf schwankung / vibrato
 fx9 = _:telefon:_; // GSM einstreuung
-
+fx10 = hardclip; // diitales clipping
+fx11 = mode; // raummode bei 120 Hz
+fx12 = hochpass; // hochpass
 // TODO:
-// hardclip
+
 // l/r inbalance
 // aussetzer
-// GSM sounds
 
-fxCollection = hgroup("fx",(fx0,fx1,fx2,fx3,fx4,fx5,fx6,fx7,fx8,fx9));
-numExamples = 10;
+numExamples = 13;
+fxCollection = hgroup("fx",(fx0,fx1,fx2,fx3,fx4,fx5,fx6,fx7,fx8,fx9,fx10,fx11,fx12));
+
 switcher(s) = par(i, numExamples, *(s==i)):>_;
 
 source = _;
@@ -63,6 +69,7 @@ switcherGui = vgroup("[0]Puzzle", switcherMechanism(choiceSig):_*amp:toStereo:st
 
 
 
-process = telefon<:_,_;
+// process = hardclip<:_,_;
 // process = no.noise:gsmComb;
-// process = hgroup("Puzzle", _<:fxCollection:switcherGui);
+// process = hochpass<:_,_;
+process = hgroup("Puzzle", _<:fxCollection:switcherGui);
