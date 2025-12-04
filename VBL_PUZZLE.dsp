@@ -1,7 +1,10 @@
 import("stdfaust.lib");
 
 exTrig = button("New Example")<:_,_':-:max(0);
-choice = no.noise : ba.sAndH(exTrig):_*0.5:_+0.5:_*(numExamples-1):round;
+randChoice = no.noise : ba.sAndH(exTrig):_*0.5:_+0.5:_*(numExamples-1):round;
+manual = checkbox("Random/Manual");
+manChoice = vslider("Choice", 0,0,1,0.01)*(numExamples-1):round;
+choice = randChoice*(1-manual) + manChoice*manual;
 
 
 crackler = no.sparse_noise(4.0);
@@ -46,10 +49,8 @@ fx14 = vinyl;
 
 // TODO:
 // l/r inbalance
-// aussetzer, digital
 // sr reduction ohne aa filter
 // mono vs stereo
-// Vinyl effekt, Knackser, Nadel
 // compression?
 // peak eq/bell?
 
@@ -69,9 +70,9 @@ switcherGui = vgroup("[0]Puzzle", switcherMechanism(choiceSig):_*amp:toStereo:st
 };
 
 
-vinyl = (_+vinylSounds):pitchModulator;
+vinyl = (_+vinylSounds*2):pitchModulator;
 // 45rpm Vinyl -> 0.75Hz  
-pitchModulator = de.fdelay(1000, (os.osc(0.75)+1)*100);
+pitchModulator = de.fdelay(1000, (os.osc(0.75)+1)*30);
 
 vinylSounds = vinNoise + vinHiCrackle*0.2 + vinLoCrackle with{
     vinNoise = no.pink_noise*0.01;
