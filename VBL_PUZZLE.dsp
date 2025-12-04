@@ -26,7 +26,7 @@ seque = (os.phasor(1,1/8)>0.7) * (os.phasor(1,9)<0.9);
 amp = shortBursts*(1-seque) + seque;
 };
 
-telefon = _+(gsm*diff:mapTo(0.02,0.08) + no.noise*0.0051);
+telefon = _+(gsm*diff:mapTo(0.08,0.02) + no.noise*0.0051);
 hardclip = _*(diff:mapTo(2,4)):min(_,1):max(_,-1);
 
 mode = _<:_+fi.resonbp(120, 350,diff:mapTo(10,30));
@@ -48,7 +48,7 @@ fx6 = _:_+no.noise*(diff:mapTo(0.01, 0.001)); // weisses rauschen
 fx7 = _:_+crackler:_; // (digitales) knacksen
 fx8 = _:vibrato:_; // gleichlauf schwankung / vibrato
 fx9 = _:telefon:_; // (GSM, telefon) einstreuung, interferenzen
-fx10 = hardclip; // diitales clipping
+fx10 = hardclip; // digitales clipping
 fx11 = mode; // raummode bei 120 Hz
 fx12 = hochpass; // hochpass
 fx13 = aussetzer; //aussetzer (kurze stille), digitales  system, vlt buffersize zu klein.
