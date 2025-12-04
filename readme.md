@@ -9,7 +9,7 @@ Die Anwendung kann unter folgendem Link gestartet werden (**es muss nichts insta
 Auf dieser Seite muss dann der große "Run"-Button geklickt werden. Weiters findet man rechts einen kleinen Player, er kann verwendet werden um ein beliebiges sample(per drag & drop einer Audiodatei, nicht sicher welche formate unterstützt werden) zu loopen und durch den störungsgenerator zu schicken.
 ## Weitere Erklärungen
 
-Die Grundanwendung der besteht darin den großen "New Example" knopf zu drücken und zuzuhören (evtl mit verschlossenen Augen). Wenn man glaubt, einen Effekt erkannt zu haben kann man die Zahl bei der "Example" steht betrachten. Hier findet man zum Beispiel '4'. Man geht nun zum code, zu den definitionen der Effekte, beginnend in Zeile 41. Hier findet man 'fx4': `fx4 = analogDist; // verzerrung` also eine Verzerrung.
+Die Grundanwendung besteht darin den großen "New Example" knopf zu drücken und zuzuhören (evtl mit verschlossenen Augen). Wenn man glaubt, einen Effekt erkannt zu haben kann man die Zahl bei der "Example" steht betrachten. Hier findet man zum Beispiel '4'. Man geht nun zum code, zu den definitionen der Effekte, beginnend in Zeile 41. Hier findet man 'fx4': `fx4 = analogDist; // verzerrung` also eine Verzerrung.
 
 Nun clickt man wieder "New Example", einer neuer (-nicht immer ein neuer, es kann der gleiche 2 Mal in folge auftauchen-) zufälliger effekt wird gewählt und hofft, dass man alles richtig erkennt.
 
