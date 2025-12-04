@@ -19,7 +19,7 @@ Derzeitige Liste an Effekten:
 ```
 fx0 = _; // bypass, original. 
 fx1 = _; // phase gedreht links/rechts. (geschieht nicht in dieser zeile)
-fx2 = tiefpass; // tiefpass, lowpass, hicut
+fx2 = tiefpass; // tiefpass (= lowpass = highcut)
 fx3 = _:_+hum:_; // brumm 
 fx4 = analogDist; // verzerrung
 fx5 = combfilter;// kammfilter
@@ -27,10 +27,10 @@ fx6 = _:_+no.noise*(diff:mapTo(0.01, 0.001)); // weisses rauschen
 fx7 = _:_+crackler:_; // (digitales) knacksen
 fx8 = _:vibrato:_; // gleichlauf schwankung / vibrato
 fx9 = _:telefon:_; // (GSM, telefon) einstreuung, interferenzen
-fx10 = hardclip; // diitales clipping
-fx11 = mode; // raummode bei 120 Hz
-fx12 = hochpass; // hochpass
-fx13 = aussetzer; //aussetzer (kurze stille), digitales  system, vlt buffersize zu klein.
+fx10 = hardclip; // digitales clipping, verzerrung
+fx11 = mode; // raummode/resonanz bei 120 Hz
+fx12 = hochpass; // hochpass (= highpass = lowcut)
+fx13 = aussetzer; //aussetzer (kurze stille, ausfälle), digitales  system, vlt buffersize zu klein.
 fx14 = vinyl; // Vinyl / Plattenspieler Artefakte.
 ```
 
