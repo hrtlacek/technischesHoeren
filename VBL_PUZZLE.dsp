@@ -1,9 +1,9 @@
 import("stdfaust.lib");
 
-exTrig = button("New Example")<:_,_':-:max(0);
+exTrig = button("[1]New Example")<:_,_':-:max(0);
 randChoice = no.noise : ba.sAndH(exTrig):_*0.5:_+0.5:_*(numExamples-1):round;
-manual = checkbox("Random/Manual");
-manChoice = vslider("Choice", 0,0,1,0.01)*(numExamples-1):round;
+manual = checkbox("[2]Random/Manual");
+manChoice = vslider("[4]Choice", 0,0,1,0.01)*(numExamples-1):round;
 choice = randChoice*(1-manual) + manChoice*manual;
 diff = vslider("Difficulty", 0.5, 0,1,0.01):si.smoo;
 
@@ -66,11 +66,11 @@ fxCollection = hgroup("fx",(fx0,fx1,fx2,fx3,fx4,fx5,fx6,fx7,fx8,fx9,fx10,fx11,fx
 
 switcher(s) = par(i, numExamples, *(s==i)):>_;
 
-switcherGui = vgroup("[0]Puzzle", switcherMechanism(choiceSig):_*amp:toStereo:stereoFx) with {
-    bypass = checkbox("Bypass");
+switcherGui = hgroup("[0]Puzzle", switcherMechanism(choiceSig):_*amp:toStereo:stereoFx) with {
+    bypass = checkbox("[0]Bypass");
     choiceSig = choice<:attach(_,choiceDisplay)*(1-bypass);
-    choiceDisplay = vbargraph("Example[style:numerical]",0,5);
-    amp = vslider("Out Gain", -20, -99,0, 0.1):si.smoo:ba,ba.db2linear;
+    choiceDisplay = vbargraph("[2]Example[style:numerical]",0,5);
+    amp = vslider("[3]Out Gain", -20, -99,0, 0.1):si.smoo:ba,ba.db2linear;
     switcherMechanism(x) = switcher(x);
     toStereo = _<:_,_;
     stereoFx = _,(_<:_,_*-1:select2(choiceSig==1));
