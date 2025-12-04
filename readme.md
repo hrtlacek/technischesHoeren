@@ -13,3 +13,4 @@ Nun clickt man weiter "New Example" und hofft dass man alles richtig erkennt.
 
 Der 'Difficulty' Regler verstellt gewisse parameter die die schwierigkeit der beispiele reguliert (zum Beispiel die Lautstärke eines hinzugefügten Rauschens). Difficulty=1 bedeutet sehr schwierig, difficulty=0 sehr leicht.
 
+![Erklaerung](erkl.png)
