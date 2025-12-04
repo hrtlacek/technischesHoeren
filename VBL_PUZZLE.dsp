@@ -11,7 +11,7 @@ mapTo(lowOut, hiOut, x) = x*(hiOut-lowOut)+lowOut;
 
 crackler = no.sparse_noise(4.0);
 vibrato = de.fdelay(1000, (os.osc(1)+1)*(diff:mapTo(300,50)));
-hum = os.osc(50)*(os.phasor(1,50)<0.1)*(diff:mapTo(0.003, 0.001));
+hum = os.osc(50)*(os.phasor(1,50)<0.1)*(diff:mapTo(0.1, 0.001));
 combfilter = hgroup("Kammfilter", comb) with {
     combDel = vslider("Delay ms [scale:log]", 1, 0.001, 300, 0.01):si.smoo;
     comb = _<:_,(_:de.fdelay(1000, combDel/1000:ba.sec2samp)):+:_*0.5;
@@ -26,10 +26,10 @@ seque = (os.phasor(1,1/8)>0.7) * (os.phasor(1,9)<0.9);
 amp = shortBursts*(1-seque) + seque;
 };
 
-telefon = _+(gsm*diff:mapTo(0.08,0.02) + no.noise*0.0051);
+telefon = _+(gsm*(diff:mapTo(0.08,0.02)) + no.noise*0.0051);
 hardclip = _*(diff:mapTo(4,2)):min(_,1):max(_,-1);
 
-mode = _<:_+fi.resonbp(120, 350,diff:mapTo(10,30));
+mode = _<:_+fi.resonbp(120, 350,diff:mapTo(30,10));
 hochpass = fi.highpass(3,diff:mapTo(1900,100));
 aussetzer = _*(no.sparse_noise(10.0):abs:fi.lowpass(1,1)*10<0.0015);
 tiefpass = fi.lowpass(3,diff:mapTo(200,3800));
