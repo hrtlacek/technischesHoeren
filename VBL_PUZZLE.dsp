@@ -5,11 +5,13 @@ randChoice = no.noise : ba.sAndH(exTrig):_*0.5:_+0.5:_*(numExamples-1):round;
 manual = checkbox("Random/Manual");
 manChoice = vslider("Choice", 0,0,1,0.01)*(numExamples-1):round;
 choice = randChoice*(1-manual) + manChoice*manual;
+diff = vslider("Difficulty", 0.5, 0,1,0.01):si.smoo;
 
+mapTo(lowOut, hiOut, x) = x*(hiOut-lowOut)+lowOut; 
 
 crackler = no.sparse_noise(4.0);
-vibrato = de.fdelay(1000, (os.osc(1)+1)*200);
-hum = os.osc(50)*(os.phasor(1,50)<0.1)*0.02;
+vibrato = de.fdelay(1000, (os.osc(1)+1)*(diff:mapTo(300,50)));
+hum = os.osc(50)*(os.phasor(1,50)<0.1)*(diff:mapTo(0.003, 0.001));
 combfilter = hgroup("Kammfilter", comb) with {
     combDel = vslider("Delay ms [scale:log]", 1, 0.001, 300, 0.01):si.smoo;
     comb = _<:_,(_:de.fdelay(1000, combDel/1000:ba.sec2samp)):+:_*0.5;
@@ -24,23 +26,28 @@ seque = (os.phasor(1,1/8)>0.7) * (os.phasor(1,9)<0.9);
 amp = shortBursts*(1-seque) + seque;
 };
 
-telefon = _+(gsm*0.051 + no.noise*0.0051);
-hardclip = _*3:min(_,1):max(_,-1);
+telefon = _+(gsm*diff:mapTo(0.02,0.08) + no.noise*0.0051);
+hardclip = _*(diff:mapTo(2,4)):min(_,1):max(_,-1);
 
-mode = _<:_+fi.resonbp(120, 350,20);
-hochpass = fi.highpass(3,1000);
+mode = _<:_+fi.resonbp(120, 350,diff:mapTo(10,30));
+hochpass = fi.highpass(3,diff:mapTo(1900,100));
 aussetzer = _*(no.sparse_noise(10.0):abs:fi.lowpass(1,1)*10<0.0015);
+tiefpass = fi.lowpass(3,diff:mapTo(200,3800));
+analogDist = _*preGain:ma.tanh:_*postGain with{
+    preGain = (diff:mapTo(2,18));
+    postGain = 1/preGain;
+};
 
 fx0 = _; // bypass, original. 
 fx1 = _; // phase gedreht links/rechts. (geschieht nicht in dieser zeile)
-fx2 = _:fi.lowpass(3,2000):_; // lowpass
+fx2 = tiefpass; // tiefpass, lowpass, hicut
 fx3 = _:_+hum:_; // brumm 
-fx4 = _*10:ma.tanh:_*0.1; // verzerrung
+fx4 = analogDist; // verzerrung
 fx5 = combfilter;//_<:_,(_:de.fdelay(1000, combDel/1000:ba.sec2samp)):+:_*0.5; //kammfilter
-fx6 = _:_+no.noise*0.001:_; // rauschen
+fx6 = _:_+no.noise*(diff:mapTo(0.01, 0.001)); // weisses rauschen
 fx7 = _:_+crackler:_; // (digitales) knacksen
 fx8 = _:vibrato:_; // gleichlauf schwankung / vibrato
-fx9 = _:telefon:_; // GSM einstreuung
+fx9 = _:telefon:_; // (GSM, telefon) einstreuung, interferenzen
 fx10 = hardclip; // diitales clipping
 fx11 = mode; // raummode bei 120 Hz
 fx12 = hochpass; // hochpass
@@ -70,12 +77,12 @@ switcherGui = vgroup("[0]Puzzle", switcherMechanism(choiceSig):_*amp:toStereo:st
 };
 
 
-vinyl = (_+vinylSounds*2):pitchModulator;
+vinyl = (_+vinylSounds*(diff:mapTo(4,0.5))):pitchModulator;
 // 45rpm Vinyl -> 0.75Hz  
-pitchModulator = de.fdelay(1000, (os.osc(0.75)+1)*30);
+pitchModulator = de.fdelay(1000, (os.osc(0.75)+1)*(diff:mapTo(40,10)));
 
 vinylSounds = vinNoise + vinHiCrackle*0.2 + vinLoCrackle with{
-    vinNoise = no.pink_noise*0.01;
+    vinNoise = no.pink_noise*0.005;
     vinHiCrackle = no.sparse_noise(4.0)+no.sparse_noise(8.0)*0.125:crackleResHi;
     crackleResHi(x) = x:fi.resonbp(fc, 1, 1) with{
         fc = no.noise*4000:ba.sAndH(x>0.01)+4050;
